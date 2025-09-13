@@ -1,0 +1,1146 @@
+---
+title: "Internship_class_notes"
+author: "farha"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Topics:
+# 1. Setting the working directory properly
+# 2. Creating and organizing project folders
+# 3. How R code works: functions, syntax, and execution
+# 4. Variables and data types in R
+# 6. Importing CSV files and working with categorical data
+# 7. Saving scripts, outputs, and the R workspace
+
+# Lecture Recording: https://youtu.be/YybbWfD_VjE?feature=shared
+# GitHub: https://github.com/AI-Biotechnology-Bioinformatics/AI_and_Omics_Research_Internship_2025
+
+# -------------------------------------------------------------------------------------------------------
+
+#### Working Directory ####
+# It is a main folder where R looks for files and save outputs/results
+
+```{r}
+getwd()  # to check current working directory
+```
+
+# Set Working Directory #
+
+# Before starting, set your working directory. 
+# This helps R know where to find or save your files.
+
+# NOTE: If you're copying a folder path from Windows,
+# make sure to either:
+# 1. Replace all backslashes "\" with forward slashes "/" 
+# OR 
+# 2. Use double backslashes "\\" 
+
+# Example:
+# If your folder path is: C:\Users\YourName\R_Projects\Biostats
+# Use either of these in R:
+
+```{r}
+setwd("C:/Users/Farha Tarique/Documents/")
+# or
+setwd("C:\\Users\\Farha Tarique\\Documents\\")
+```
+
+
+# --------------------------------------------------------------------------
+
+#### Organize Project Folder ####
+
+# First, create a main project folder:
+# Go to the File menu > select 'New Project' > choose 'New Directory' > then 'New Project'
+# Name your project and choose the location (your main folder)
+# R will create a .Rproj file and set it as your working environment
+# check the name of project on top right corner of RStudio
+
+# Create common subfolders for project organization
+```{r}
+dir.create("data")     # For storing raw or cleaned data files
+dir.create("script")   # For saving R scripts
+dir.create("results")  # For saving analysis outputs
+
+```
+
+# --------------------------------------------------------------------------
+
+#### How R Code Works ####
+
+# Functions in R follow the format: function_name(arguments)
+```{r}
+print("Biotechnology")
+```
+
+
+# Create a simple numeric vector 
+```{r}
+gene_expression <- c(2.3, 3.8, 3.9, 5.6, 9.4)
+```
+
+
+# "gene_expression" is the variable name
+# "<-" is the assignment operator used to store values
+# c() is the function to combine values into a vector/list
+
+
+# Calculate the mean of the vector
+```{r}
+mean(gene_expression)
+mean_result <- mean(gene_expression)
+```
+
+
+# Basic visualizations
+```{r}
+plot(gene_expression)     # Scatterplot
+hist(gene_expression)     # Histogram
+barplot(gene_expression)  # Bar plot
+
+```
+
+# Summary statistics
+```{r}
+summary(gene_expression)
+
+```
+
+# --------------------------------------------------------------------------
+
+#### R Data Types ####
+
+# 1. Numeric (decimal numbers) 
+
+```{r}
+x <- 24.5     
+class(x) # to check the data type of any variable
+
+
+y <- -40.4 
+class(y)
+```
+
+
+# 2. Integer (whole numbers) 
+
+```{r}
+
+z <- 24L      # Integer (note the 'L' suffix)
+class(z)
+```
+
+
+# By default are treated both 'decimal' and 'integer' values as numeric unless 'L' is used
+
+```{r}
+numeric <- c(2, 3, 4)
+class(numeric)
+
+integer <- c(2L, 3L, 4L)
+class(integer)
+
+
+```
+
+# Example vector of numeric values
+```{r}
+var_1 <- c(28.4, 23.7, 2.9)
+class(var_1)
+```
+
+
+# Convert numeric to integer
+```{r}
+var_2 <- as.integer(var_1)
+class(var_2)
+
+```
+
+#R truncates the decimal part when converting numeric to integer.
+
+# Convert integer back to numeric
+```{r}
+var_3 <- as.numeric(var_2)
+class(var_3)
+
+```
+
+# Integer uses less memory than numeric.
+
+# 3. Character / String Data 
+# Must be enclosed in single (' ') or double (" ") quotes
+
+```{r}
+
+var_4 <- c("gene1", "gene2", "gene3")
+class(var_4)
+```
+
+
+# Incorrect example (gene1 is unquoted and will throw error if not defined)
+```{r}
+var_5 <- c(gene1, "gene2", "gene3")
+
+```
+
+# R consider unquoted strings as variable name
+
+# Character vector with numeric values in quotes treated as text
+```{r}
+var_6 <- c("3.8", "4.6", "5.9")
+class(var_6)
+
+mean(var_6)  # This will return an error since the values are characters
+
+```
+
+# Proper numeric vector
+```{r}
+var_7 <- c(3.8, 4.6, 5.9)
+class(var_7)
+
+mean(var_7)  # Returns numeric mean
+
+```
+
+# 4. Factor (Categorical) Data 
+
+# Categorical vector with string labels
+```{r}
+disease_status <- c("cancer", "normal", "cancer", "cancer", "normal")
+class(disease_status)
+```
+
+
+# Convert character vector to factor
+```{r}
+disease_status <- as.factor(disease_status)
+class(disease_status)
+disease_status
+
+```
+
+# Set factor level order manually
+```{r}
+disease_status <- factor(disease_status, 
+                         levels = c("normal", "cancer"))
+
+disease_status
+```
+
+
+# 5. Logical Data Type 
+```{r}
+
+age <- c(23, 25, 28)
+var_8 <- age < 25    
+print(var_8   )# Returns logical vector (TRUE/FALSE)
+
+```
+
+# --------------------------------------------------------------------------
+# Import Data from CSV
+```{r}
+
+data <- read.csv(file.choose())
+
+```
+
+# View data in spreadsheet format
+```{r}
+View(data)
+
+```
+
+# Check structure of the dataset
+```{r}
+str(data)
+
+```
+
+# Convert 'height' column to factor
+```{r}
+data$height_fac <- as.factor(data$height)
+str(data)
+
+```
+
+# Reorder factor levels manually
+```{r}
+data$height_fac <- factor(data$height_fac, 
+                          levels = c("Tall", "Medium", "Short"))
+levels(data$height_fac)
+```
+
+
+# Convert character/factor to numeric using factor() function
+# Example # 0 = Short, 1 = Medium & 2 = Tall
+```{r}
+
+data$height_num <- factor(data$height_fac,
+                        levels = c("Short", "Medium", "Tall"),
+                        labels = c(0, 1, 2)) 
+
+```
+
+# Convert 'gender' to factor
+```{r}
+data$gender_fac <- as.factor(data$gender)
+str(data)
+
+```
+
+# Convert factor to numeric using ifelse statement (Female = 1, Male = 0)
+```{r}
+data$gender_num <- ifelse(data$gender_fac == "Female", 1, 0)
+class(data$gender_num)
+
+```
+
+# Convert numeric gender code to factor
+```{r}
+data$gender_num <- as.factor(data$gender_num)
+class(data$gender_num)
+
+```
+
+#### Saving Outputs ####
+
+# To save R script use keyboard shortcut 
+# ctrl + s 
+# Or go to the file menu & select 'Save As' option
+
+# To open R script use keyboard shortcut 
+# ctrl + Enter 
+# Or go to the file menu & select 'Open File' option
+
+
+# Save file  as CSV in results folder
+```{r}
+write.csv(disease_status, file = "results/patient_data.csv")
+
+```
+
+# Save the entire R workspace
+```{r}
+save.image(file = "full_workspace.RData")
+
+```
+
+# Save selected objects only
+```{r}
+save(gene_expression, disease_status, file = "workspace.RData")
+
+```
+
+# Load workspace
+```{r}
+load("workspace.RData")
+load("full_workspace.RData")
+
+```
+
+# --------------------------------------------------------------------------
+# ===================================================================
+
+# Topic: Syntax in R
+# Includes:
+#   1. Variables
+#   2. Comments
+#   3. Keywords
+
+# --------------------------------------------------------------------------------------------------
+# Syntax are the predefined structure and rules of any programming language
+# It shows us how to right codes right way 
+# Helps to write clear and error free codes &
+# easy to debug and fix errors
+# R have three syntax: Variables, Comments & Keywords 
+# --------------------------------------------------------------------------------------------------
+
+#### 1. VARIABLES ####
+
+# Variables store values in R.
+# Use the assignment operator `<-` to assign variable
+
+# Example: store a gene name
+# Use quotes (" ") or (' ') to write string data e.g "TP53", "Gene"
+# variable name should not be in quotes
+
+```{r}
+gene <- "TP53"
+
+```
+
+# Explanation:
+# gene is the variable name
+# <- is an assignment operator that stores the gene name "TP53" into variable
+# "TP53" is now saved in variable gene
+
+# Retrieve the value in the console
+```{r}
+gene # type variable name and hit ctrl + entr 
+print(gene) # or use print () function
+
+
+```
+
+# Store numeric values in one variable (vector)
+```{r}
+expression_levels <- c(2.3, 4.6, 3.6, 7.2, 4.7)
+
+```
+
+# Import a CSV file as a variable
+```{r}
+raw_data <- read.csv(file.choose())
+raw_data
+
+```
+
+# Dataset: patient_info.csv (available on GitHub)
+```{r}
+https://github.com/AI-Biotechnology-Bioinformatics/AI_and_Omics_Research_Internship_2025/tree/main
+
+```
+
+# --------------------------------------------------------------------------------------------------
+
+#### Rules for Variable Naming ####
+
+# Must start with a letter
+
+```{r}
+# 1gene <- 25  # Invalid, starts with a number
+gene1 <- 25    # Valid, number at the end
+```
+
+
+# No spaces in names
+```{r}
+sample id <- "s01"  # Invalid: contains space
+
+```
+
+# Use underscore (_) or dot (.) instead
+```{r}
+sample_id <- "s01"
+sample.id <- "s02"
+
+```
+
+# R is case-sensitive
+```{r}
+Glucose_level <- 110
+glucose_level <- 110  # Treated as a different variable
+
+```
+
+# Variables can be overwritten without warning
+```{r}
+glucose_level <- c(110, 90, 120)
+```
+
+
+# Example of variable overwriting in a data
+# Removing Columns
+
+# First create a copy of raw_data to preserve the original dataset
+```{r}
+data <- raw_data
+```
+
+
+# Remove the 'patient_id' column from the original raw_data
+# This overwrites raw_data permanently, and the column cannot be restored
+# unless a copy (like 'data') was created beforehand
+```{r}
+raw_data$patient_id <- NULL
+```
+
+
+# Alternatively, create a new dataset without the first column
+# This keeps the original 'data' intact and stores the modified version in clean_data
+```{r}
+clean_data <- data[, -1]
+```
+
+
+# --------------------------------------------------------------------------------------------------
+
+#### 2. COMMENTS ####
+
+# Comments improve code readability.
+# They are ignored during execution.
+# This is only for your own understanding
+# R doesn’t consider it as a code
+# It starts with # and anything after that is ignored by R when the code runs
+# If your code begin with # R treats the entire line as a comment and skips it completely
+
+# Example:
+# data_2 <- 23
+```{r}
+data_2 <- 23
+```
+
+
+# Comments can be used as headings:
+#### Heading 1 ####
+#### Heading 2 ####
+
+# Best practice: always add comment before a code or at the end for clarity”
+
+# --------------------------------------------------------------------------------------------------
+
+#### 3. KEYWORDS ####
+
+# Reserved words have predefined functions and cannot be used as variable names.
+# Examples: if, else, TRUE, FALSE, for
+
+```{r}
+help("reserved")  # Check the list of reserved words
+```
+
+
+# You can check the documentation for any R function using help(function_name) or ?function_name
+```{r}
+help(mean) # check other R function
+?median
+
+```
+
+# --------------------------------------------------------------------------------------------------
+
+#### Sorting Data with TRUE & FALSE keywords ####
+
+# Sort 'age' from largest to smallest
+```{r}
+sorted_age <- sort(raw_data$age, decreasing = TRUE)
+sorted_age
+
+```
+
+# Sort 'age' from smallest to largest
+```{r}
+sorted_age2 <- sort(raw_data$age, decreasing = FALSE)
+sorted_age2
+```
+
+
+# TRUE and FALSE are logical constants in R
+# They are written in uppercase without quotation marks
+
+# --------------------------------------------------------------------------------------------------
+
+#### if & else: Logical Conditions ####
+
+```{r}
+gene_expression <- 30
+
+```
+
+# if statement:
+# Executes the code inside the curly braces only if the condition is TRUE
+# Here, the condition checks if gene_expression is greater than 50
+
+# If TRUE, prints the message "Gene is highly expressed"
+```{r}
+if (gene_expression > 30) {
+  print("Gene is highly expressed")
+}
+
+```
+
+# If FALSE, nothing happens because there is no else block
+```{r}
+if (gene_expression > 50) {
+  print("Gene is highly expressed")
+}
+```
+
+
+# if-else statement:
+# Executes the first block if the condition is TRUE
+# If the condition is FALSE, executes the code in the else block
+```{r}
+
+if (gene_expression > 50) {
+  print("Gene is highly expressed")
+} else {
+  print("Gene expression is low")
+}
+
+```
+
+# Invalid: cannot use 'if' as a variable name
+```{r}
+# if <- 28
+
+```
+
+# --------------------------------------------------------------------------------------------------
+
+#### for Loop: Automating Tasks ####
+
+
+# Example: convert character columns to factors
+
+# Check structure of raw_data
+```{r}
+str(raw_data)
+
+```
+
+# Create a copy to avoid modifying the original data
+```{r}
+clean_data <- raw_data
+str(clean_data)
+
+```
+
+# Convert all character columns to factors
+# Loop through each column of clean_data using its index (i)
+```{r}
+for (i in 1:ncol(clean_data)) {
+  if (is.character(clean_data[[i]])) {
+    clean_data[[i]] <- as.factor(clean_data[[i]])
+  }
+}
+
+```
+
+# Explanation:
+# if (is.character(clean_data[[i]]))  
+#   Checks whether the current column in clean_data is of type character.
+#   If TRUE, it means the column contains text data and should be converted.
+
+# clean_data[[i]] <- as.factor(clean_data[[i]])  
+#   Converts the current character column into a factor, which is the appropriate type for categorical data.
+
+# Verify whether character columns were successfully converted into factors
+# str() shows the structure of the dataset, including data types for each column
+```{r}
+str(clean_data)  # Check the updated dataset after conversion
+str(raw_data)    # Compare with the original dataset to ensure changes did not affect it
+
+```
+
+# -------------------------------------------------------------------------------------------------------------
+
+# ===================================================================
+
+# --------------------
+# Topics in this module
+# --------------------
+#   1. Operators in R
+#   2. Data Structures in R
+#   3. User-defined Functions in R
+#   4. Automating Workflows with for-Loops
+# --------------------------------------------------------------------------------------------------
+
+#### 1. Operators in R ####
+
+# Operators are special symbols in R.
+# They instruct R to perform actions on values or variables.
+# You will use them for assignment, calculations, comparisons, and logical tests.
+
+# ----------------------
+# Assignment Operators
+# ----------------------
+# Used to store values inside variables
+
+# <-   (Most common, assigns value on the right to the name on the left)
+```{r}
+height <- c(1.75, 1.76, 1.82, 1.67)
+
+```
+
+# ->   (Same but assigns left-hand values to right-hand variable name)
+```{r}
+c(68, 78, 85, 75) -> weight
+
+```
+
+# =    (Also assigns values, often used in function arguments)
+```{r}
+smoking_status = c("Yes", "No", "No", "Yes")
+
+```
+
+
+# ----------------------
+# Arithmetic Operators
+# ----------------------
+# Perform basic math: +, -, *, /, ^
+#   +  addition
+#   -  subtraction
+#   *  multiplication
+#   /  division
+#   ^  exponent (to the power of)
+
+# Example: calculate BMI (Body Mass Index = weight / height^2)
+```{r}
+BMI <- weight/(height^2)
+BMI
+```
+
+
+# Note: R applies operations element-wise when variables are vectors.
+# This is called "vectorization", every weight is divided by every height squared.
+
+
+# ---------------------
+# Comparison Operators
+# ---------------------
+# Comparison operators ask TRUE/FALSE questions about values.
+# They do not calculate a number, they return a logical output.
+```{r}
+
+BMI > 25                    # Is BMI greater than 25?
+BMI < 18.5                  # Is BMI less than 18.5?
+height >= 1.75              # IS height greater than or equal to 1.75
+weight <= 65                # Is weight less than or equal to 65
+smoking_status == "No"      # Is smoking status equal to No
+smoking_status != "No"      # Is smoking status not equal to No
+
+```
+
+
+# -------------------
+# Logical Operators
+# -------------------
+# Combine multiple conditions using:
+#   &   AND
+#   |   OR
+#   !   NOT
+
+# Example: is the patient overweight AND a smoker?
+```{r}
+(BMI > 25) & (smoking_status == "Yes")
+
+```
+
+# Example: overweight OR smoker?
+```{r}
+(BMI > 25) | (smoking_status == "Yes")
+
+```
+
+# Example: NOT a smoker?
+```{r}
+!(smoking_status == "Yes")
+
+```
+
+# ----------------------
+# Summary of Operators
+# ----------------------
+#   - Assignment stores values
+#   - Arithmetic performs calculations
+#   - Comparison returns TRUE/FALSE
+#   - Logical combines conditions
+# --------------------------------------------------------------------------------------------------
+
+# ------------------------
+# 2. Data Structures in R
+# ------------------------
+# Data structures are how R organizes information.
+# We commonly use:
+#   1. Vectors
+#   2. Lists
+#   3. Matrices
+#   4. Data Frames
+
+# ---------
+# Vectors
+# ---------
+# Simplest structure in R. Stores a sequence of values of the SAME type.
+```{r}
+
+num_vec <- c(1, 2, 3, 4)   # numeric vector
+chrc_vector <- c("gene1", "gene2", "gene3")   # character vector
+logical_vector <- c(TRUE, FALSE, TRUE)        # logical vector
+
+```
+
+# Important:
+# Maybe R does not throw an error if you combine mixed types.
+# Instead, it coerces all values into a single type.
+```{r}
+mix_vector <- c("gene1", 1, "gene2", 2)
+mix_vector  # all values become characters
+
+```
+
+# Indexing: extract elements with []
+```{r}
+num_vec[2]       # second element
+num_vec[2:4]     # elements 2 through 4
+
+```
+
+# ---------
+# Lists
+# ---------
+# Unlike vectors, lists can store different types together.
+```{r}
+all_vectors <- list(num_vec, chrc_vector, logical_vector)
+all_vectors[[2]]   # extract the second element of the list
+
+```
+
+# ---------
+# Matrices
+# ---------
+# A 2D table where all values must be the same type.
+
+```{r}
+my_matrix <- matrix(1:9, nrow = 3, ncol = 3)  # fills column-wise by default
+my_matrix <- matrix(1:9, nrow = 3, ncol = 3, byrow = TRUE) # row-wise
+
+```
+
+# Access with [row, column]
+```{r}
+my_matrix[2,3]
+my_matrix[2,]
+
+```
+
+# ---------
+# Data Frames
+# ---------
+# Most important structure for biological datasets.
+# Columns can have different types (numeric, character, factor).
+```{r}
+data <- data.frame(
+  patient_id = c("P1", "P2", "P3"),
+  age = c(65, 78, NA),
+  diagnosis = c("cancer", "diabetes", "cancer")
+)
+```
+
+
+# --------------------
+# Dataset Assessment
+# --------------------
+# Before analyzing, inspect your dataset to understand its structure.
+```{r}
+str(data)       # structure (column names, data types, preview)
+head(data)      # first 6 rows
+tail(data, 2)   # last 2 rows
+dim(data)       # number of rows and columns
+names(data)     # column names
+
+```
+
+# Access data using:
+```{r}
+data$patient_id     # extract single column
+data[1:2, c(1,3)]   # extract specific rows and columns
+
+```
+
+# Create new columns:
+```{r}
+data$new_column <- c(1, 2, 3)
+
+```
+
+# ----------------
+# Missing Values
+# ----------------
+# Real data often contains missing values (NA).
+# You must check and handle them before analysis.
+
+```{r}
+is.na(data)                # identify missing values
+sum(is.na(data))           # total missing values
+colSums(is.na(data))       # missing values per column
+rowSums(is.na(data))       # missing values per row
+
+```
+
+# Ways to handle NA:
+
+# remove rows with NA
+```{r}
+clean_data1 <- na.omit(data)   
+
+```
+
+
+# remove columns with NA
+```{r}
+clean_data_2 <- data[, colSums(is.na(data))==0]
+
+```
+
+# replace NA value with 0
+```{r}
+clean_data_3 <- data
+clean_data_3[is.na(clean_data_3)] <- 0
+
+```
+
+# replace NA value with mean
+```{r}
+clean_data_4 <- data
+clean_data_4[is.na(clean_data_4)] <- mean(data$age, na.rm = TRUE)
+
+```
+
+# ------------------------------
+# Summary of Data Structures:
+# ------------------------------
+
+#   - Vectors: simple sequences of same data type
+#   - Lists: mix of different data types
+#   - Matrices: numeric tables
+#   - Data Frames: mixed-type tables 
+
+
+#--------------------
+# 3. Functions in R
+#--------------------
+# Functions let us wrap code into reusable blocks.
+
+# function is  reusable block of code 
+# Why use functions?
+#   - Avoid repetition
+#   - Organize and simplify code
+#   - Reuse across projects (save it for later use)
+#   - Share with others
+
+# A function in R has 4 key parts:
+#   1. Name         -> the name you give to the function
+#   2. Arguments    -> the inputs you provide to the function
+#   3. Body         -> the set of operations the function performs
+#   4. Return Value -> the output the function gives back
+
+# Example: A function to calculate Body Mass Index (BMI)
+
+# 1. Function Name: calculate_BMI
+# 2. Arguments: weight (in kg), height (in meters)
+# 3. Body: performs BMI calculation e.g   # Formula: BMI = weight / (height^2)
+# 4. Return Value: the BMI value
+
+```{r}
+calculate_BMI <- function(weight, height) {
+  # Perform the BMI calculation
+  Bmi <- weight / (height ^ 2)
+  
+  # Return the BMI value
+  return(Bmi)
+}
+```
+
+
+# Call the function by naming arguments explicitly
+```{r}
+calculate_BMI(weight = 60, height = 1.75)
+
+```
+
+# Call the function using variables as arguments
+```{r}
+calculate_BMI(weight = weight, height = height)
+
+```
+
+# If a function expects two arguments, you must provide both
+# This will give an error because 'height' is missing
+```{r}
+calculate_BMI(60) 
+
+```
+
+# You can assign default values to function arguments
+```{r}
+calculate_BMI <- function(weight, height = 1.75) {
+  # Perform the BMI calculation
+  Bmi <- weight / (height ^ 2)
+  
+  # Return the BMI value
+  return(Bmi)
+}
+
+```
+
+# In this case, if you don’t provide height, R automatically uses 1.75 as the default.
+```{r}
+calculate_BMI(weight = 60)
+
+```
+
+# ----------------------------
+# Lazy evaluation in R
+# ----------------------------
+# If your function has three arguments, but the body only uses two,
+# R does not force you to supply the third argument for the calculation.
+# Example: 'age' is defined as an argument, but not used in the formula.
+
+# Define the function with three arguments
+```{r}
+calculate_BMI <- function(weight, height, age){
+  # Perform the BMI calculation
+  bmi <- weight / (height^2)
+  
+  # Return the BMI value
+  return(bmi)
+}
+```
+
+
+# Here we pass only 'weight' and 'height'
+# Even though 'age' exists as an argument, it is ignored because it is not used
+```{r}
+calculate_BMI(60, 1.65)
+
+```
+
+#---------
+# Summary:
+#---------
+# Functions help us package logic once and apply it to different inputs.
+
+# ----------------------------------
+# 4. Automating Workflows with for-Loop
+# ----------------------------------
+# Suppose you have multiple datasets and you want to:
+#   - import them,
+#   - check missing values,
+#   - clean columns,
+#   - compute BMI,
+#   - and save results.
+#
+# Instead of repeating steps for each file, we use loops.
+
+# -----------------------
+# Typical loop workflow:
+# -----------------------
+
+# Define the input folder (where raw data files are stored) and the output folder (where results will be saved).
+# Specify the list of files that need to be processed.
+# Prepare an empty list in R to store results for later use.
+# For each file in the list:
+#          Import the data into R.
+#          Check and handle missing values (NA).
+#          Calculate BMI using the calculate_BMI function.
+#          Save the processed results both as a CSV file and in the R results list.
+
+# ----------------------------------------------------
+# Calculate BMI of two dataset within loop
+
+# Define input and output folders
+```{r}
+input_dir <- "Raw_Data" 
+output_dir <- "Results"
+
+```
+
+
+# create output folder if not already exist
+
+```{r}
+if(!dir.exists(output_dir)){
+  dir.create(output_dir)
+}
+
+```
+
+
+# List which files to process
+```{r}
+files_to_process <- c("data_1.csv", "data_2.csv") 
+
+```
+
+# These must match exactly with the names in your working folder,
+# otherwise R will not find them.
+
+# For practice, you can instead use the provided datasets:
+# BMI_data_1.csv
+# BMI_data_2.csv
+# (download from the GitHub repository).
+```{r}
+https://github.com/AI-Biotechnology-Bioinformatics/AI_and_Omics_Research_Internship_2025/tree/main
+
+```
+
+# Prepare empty list to store results in R 
+```{r}
+result_list <- list()
+
+```
+
+# For each file with in a loop:
+#       - import data
+#       - handle NA values
+#       - calculate BMI using calculate_BMI function
+#       - save results (both as CSV and inside R list)
+
+
+```{r}
+for (file_names in files_to_process) {
+  cat("\nProcessing:", file_names, "\n")
+  
+  input_file_path <- file.path(input_dir, file_names)
+  
+  # Import dataset
+  data <- read.csv(input_file_path, header = TRUE)
+  cat("File imported. Checking for missing values...\n")
+  
+  # handling missing values
+  
+  if("height" %in% names(data)){
+    missing_count <- sum(is.na(data$height))
+    
+    cat("Missing values in 'height':", missing_count, "\n")
+    data$height[is.na(data$height)] <- mean(data$height, na.rm = TRUE)
+  }
+  
+  if("weight" %in% names(data)){
+    missing_count <- sum(is.na(data$weight))
+    
+    cat("Missing values in 'weight':", missing_count, "\n")
+    data$weight[is.na(data$weight)] <- mean(data$weight, na.rm = TRUE)
+  }
+  # calculate BMI
+  data$bmi <- calculate_BMI(data$weight, data$height)
+  cat("BMI has been calculated successfully.\n")
+  
+  # save results in R
+  result_list[[file_names]] <- data 
+  
+  # save results in Results folder
+  output_file_path <- file.path(output_dir, paste0("BMI_results", file_names))
+  write.csv(data, output_file_path, row.names = FALSE)
+  cat("Results saved to:", output_file_path, "\n")
+}
+```
+
+
+# The loop repeats until all files are processed.
+
+```{r}
+results_1 <- result_list[[1]] 
+results_2 <- result_list[[2]]
+```
+
+
+# --------
+# Summary:
+# --------
+# Loops automate repetitive work 
+# making your workflow faster 
+# consistent, and reproducible
+
+# --------------------------
+```{r}
+
+```
+
+
+`
